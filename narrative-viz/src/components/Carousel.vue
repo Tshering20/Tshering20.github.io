@@ -1,29 +1,46 @@
 <template>
   <v-container>
-        <v-carousel>
+        <v-carousel 
+        hide-delimiter-background
+        show-arrows-on-hover>
           <v-carousel-item
-            v-for="(decade, i) in decades"
+            v-for="(decade, i) in chartType"
             :key="i"
             reverse-transition="fade-transition"
             transition="fade-transition"
-          ></v-carousel-item>
+          >
+            <v-sheet
+              height="100%"
+              color='grey'
+            >
+              <v-row
+                class="fill-height"
+                align="center"
+                justify="center"
+              >
+                <div v-for='datum in data' :key='datum.Name'>
+                  {{ datum.Name }}
+                </div>
+              </v-row>
+            </v-sheet>
+          </v-carousel-item>
         </v-carousel>
   </v-container>
 </template>
 
 <script>
 // import * as d3 from "d3";
-import vg_data from '../vgsales.json'
 
 export default {
   name: "Carousel",
+  props: ['data'],
   data() {
     return {
-      data: vg_data,
-      decades: ['1980s', '1990s', '2000s', '2010s'],
+      chartType: ['A', 'B', 'C', 'D'],
     };
   },
   mounted() {
+ 
   },
   methods: {
   }
