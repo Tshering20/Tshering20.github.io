@@ -1,19 +1,17 @@
 <template>
   <v-app>
-    <v-main>
-      <Chart />
-    </v-main>
+    <Carousel />
   </v-app>
 </template>
 
 <script>
-import Chart from './components/Chart';
+import Carousel from './components/Carousel';
 
 export default {
   name: 'App',
 
   components: {
-    Chart,
+    Carousel,
   },
 
   data: () => ({
