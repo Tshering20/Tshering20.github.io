@@ -42,7 +42,7 @@
           <v-btn
             class='mx-4'
             color="primary"
-            @click="e1 = 2"
+            @click="e1 = 2; dialogText = secondTexts; dialog = true;"
           >
             Next Decade
           </v-btn>
@@ -64,7 +64,7 @@
           <v-btn
             class='mx-4'
             color="primary"
-            @click="e1 = 3"
+            @click="e1 = 3; dialogText = thirdTexts; dialog = true;"
           >
             Next Decade
           </v-btn>
@@ -88,7 +88,7 @@
           <v-btn
             class='mx-4'
             color="primary"
-            @click="e1 = 4"
+            @click="e1 = 4; dialogText = fourthTexts; dialog = true;"
           >
               Next Decade
           </v-btn>
@@ -112,7 +112,7 @@
           <v-btn
             class='mx-4'
             color="primary"
-            @click="e1 = 1"
+            @click="e1 = 1; dialogText = firstTexts; dialog = true;"
           >
               Restart
           </v-btn>
@@ -144,13 +144,7 @@ export default {
     fourthTexts: ["Over the last decade, the gaming industry has continued to gain momentum as technology advances and budgeting increases.", "Consoles such as the PS4, Xbox One, and Nintendo Switch have been released recently in the past few years.", "Games have become bigger than ever, the GTA V has made over $6 billion in revenue.", "Both Sony and Microsoft have set their vision on VR gaming and changing the experience of video games"],
     decadeToData: vg_data,
     e1: 1
-  }),
-  watch: {
-    e1: function () {
-      this.dialog = false;
-      this.$forceUpdate()
-    }
-  }
+  })
 };
 </script>
 
