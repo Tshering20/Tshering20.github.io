@@ -240,7 +240,7 @@ export default {
       .attr("x", -120)
       .attr("transform", "rotate(-90)")
       .attr("fill", "white")
-      .text("COUNTS");
+      .text("COUNT");
 
       chart.append('g')
       .attr('transform', `translate(0, ${height})`)

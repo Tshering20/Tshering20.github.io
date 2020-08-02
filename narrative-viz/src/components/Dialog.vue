@@ -5,9 +5,9 @@
       persistent 
     >
       <v-card>
-        <v-card-title class="headline">Overview</v-card-title>
+        <v-card-title class="headline">OVERVIEW</v-card-title>
 
-        <v-card-text>
+        <v-card-text style='font-size: 16px;'>
             <p v-for='text in dialogText' :key='text' style='font-weight: 500;'>{{text}}</p>
         </v-card-text>
 
@@ -16,7 +16,7 @@
           <v-btn
             color="#1ca9c9"
             text
-            @click="$emit('closed')"
+            @click="$emit('closed', dialogText)"
           >
             Continue
           </v-btn>

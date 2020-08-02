@@ -8,7 +8,7 @@
       <img src="./assets/controller.svg" style='height: 40px; margin-right: 20px;'>
       <v-toolbar-title>Video Game Sales Exploration</v-toolbar-title>
     </v-app-bar>
-    <Dialog :dialog='dialog' :dialogText='dialogText' @closed='dialog = false'/>
+    <Dialog :dialog='dialog' :dialogText='dialogText' @closed='updateDialog'/>
     <v-stepper v-model="e1" eager>
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1">1980s</v-stepper-step>
@@ -144,7 +144,16 @@ export default {
     fourthTexts: ["Over the last decade, the gaming industry has continued to gain momentum as technology advances and budgeting increases.", "Consoles such as the PS4, Xbox One, and Nintendo Switch have been released recently in the past few years.", "Games have become bigger than ever, the GTA V has made over $6 billion in revenue.", "Both Sony and Microsoft have set their vision on VR gaming and changing the experience of video games"],
     decadeToData: vg_data,
     e1: 1
-  })
+  }),
+  methods: {
+    updateDialog (val) {
+      if (val[0] == "The dataset used contains a list of video games with sales greater than 100,000 copies obtained from vgchartz.com.") {
+        this.dialogText = this.firstTexts
+      } else {
+        this.dialog = false
+      }
+    }
+  }
 };
 </script>
 
