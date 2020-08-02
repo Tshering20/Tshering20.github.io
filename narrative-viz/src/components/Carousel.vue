@@ -25,7 +25,7 @@ export default {
   props: ['data'],
   data() {
     return {
-      chartType: ['genres', 'publishers', 'platforms', 'years', 'sales'],
+      chartType: ['publishers', 'platforms', 'genres', 'years', 'sales'],
       yearCounts: {},
       genres: {},
       publishers: {},
@@ -144,9 +144,19 @@ export default {
       chart.append('g')
       .call(d3.axisLeft(yScale));
 
+      let domain_values = Object.keys(chartData).sort(function(x, y) {
+        if (chartData[x] < chartData[y]) {
+          return -1;
+        }
+        if (chartData[x] > chartData[y]) {
+          return 1;
+        }
+        return 0;
+      });
+
       const xScale = d3.scaleBand()
       .range([0, width])
-      .domain(Object.keys(chartData).map((p) => p))
+      .domain(domain_values)
       .padding(0.2)
 
       chart.append('g')
@@ -154,7 +164,7 @@ export default {
       .call(d3.axisBottom(xScale));
 
       chart.selectAll()
-      .data(Object.keys(chartData))
+      .data(domain_values)
       .enter()
       .append('rect')
       .attr('class', 'bar')
@@ -164,11 +174,11 @@ export default {
       .attr('width', xScale.bandwidth())
     },
     updateSVG (slide_num) {      
-        if (slide_num == 0) {
+        if (slide_num == 2) {
         this.createSVG(slide_num, this.genres)
       } else if (slide_num == 1) {
         this.createSVG(slide_num, this.platforms)
-      } else if (slide_num == 2) {
+      } else if (slide_num == 0) {
         this.createSVG(slide_num, this.publishers)
       } else if (slide_num == 3) {
         this.createSVG(slide_num, this.yearCounts)
