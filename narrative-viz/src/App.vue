@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-stepper v-model="e1">
+    <v-stepper v-model="e1" eager>
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1">1980s</v-stepper-step>
 
@@ -19,7 +19,7 @@
 
       <v-stepper-items>
         <v-stepper-content step="1">
-          <v-card
+          <v-card  v-if='e1 == 1'
             class="mb-12"
           >
             <Carousel :data='decadeToData["1980s"]'/>
@@ -35,9 +35,11 @@
         </v-stepper-content>
 
         <v-stepper-content step="2">
-          <v-card
+          <v-card v-if='e1 == 2'
             class="mb-12"
-          ></v-card>
+          >
+            <Carousel :data='decadeToData["1990s"]'/>
+          </v-card>
 
           <v-btn
             color="primary"
@@ -50,9 +52,11 @@
         </v-stepper-content>
 
         <v-stepper-content step="3">
-          <v-card
+          <v-card  v-if='e1 == 3'
             class="mb-12"
-          ></v-card>
+          >
+            <Carousel :data='decadeToData["2000s"]'/>
+          </v-card>
 
           <v-btn
             color="primary"
@@ -65,11 +69,11 @@
         </v-stepper-content>
 
         <v-stepper-content step="4">
-          <v-card
+          <v-card  v-if='e1 == 4'
             class="mb-12"
-            color="grey lighten-1"
-            height="200px"
-          ></v-card>
+          >
+            <Carousel :data='decadeToData["2010s"]'/>
+          </v-card>
 
           <v-btn
             color="primary"
@@ -77,7 +81,6 @@
           >
               Restart
           </v-btn>
-          <v-spacer />
           <v-btn text @click="e1 = 3">Back</v-btn>
         </v-stepper-content>
       </v-stepper-items>
@@ -95,11 +98,15 @@ export default {
   components: {
     Carousel,
   },
-
   data: () => ({
     decadeToData: vg_data,
     e1: 1
   }),
+  watch: {
+    e1: function () {
+      this.$forceUpdate()
+    }
+  }
 };
 </script>
 
