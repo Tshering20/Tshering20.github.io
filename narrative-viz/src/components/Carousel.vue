@@ -7,8 +7,8 @@
       show-arrows-on-hover
       v-model='currentChart'>
       <h1 class='chart-title' v-if='currentChart === 0'>100 BEST SELLING GAMES OF THE {{decade}}</h1>
-      <h1 v-else-if='currentChart != 4' class='chart-title'>TOP {{chartType[currentChart]}} FOR THE BEST SELLING GAMES</h1>
-      <h1 v-else class='chart-title'>PERCENTAGE OF TOTAL SALES BY REGION FOR THE BEST SELLING GAMES</h1>
+      <h1 v-else-if='currentChart != 5' class='chart-title'>TOP {{chartType[currentChart]}} FOR THE 100 BEST SELLING GAMES</h1>
+      <h1 v-else class='chart-title'>PERCENTAGE OF TOTAL SALES BY REGION FOR THE 100 BEST SELLING GAMES</h1>
         <v-carousel-item
           reverse-transition="fade-transition"
           transition="fade-transition"
