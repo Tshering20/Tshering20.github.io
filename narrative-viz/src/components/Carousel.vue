@@ -5,9 +5,11 @@
     hide-delimiter-background
     show-arrows-on-hover
     v-model='currentChart'>
-    <h1 v-if='currentChart != 4' class='chart-title'>TOP {{chartType[currentChart]}} BY COUNT OF THE 100 BEST SELLING GAMES</h1>
+    <h1 v-if='currentChart != 4' class='chart-title'>TOP {{chartType[currentChart]}} OF THE 100 BEST SELLING GAMES</h1>
     <h1 v-else class='chart-title'>PERCENTAGE OF TOTAL SALES BY REGION FOR 100 BEST SELLING GAMES</h1>
       <v-carousel-item
+        reverse-transition="fade-transition"
+        transition="fade-transition"
         eager
         v-for="(type) in chartType"
         :key="type"
@@ -96,7 +98,7 @@ export default {
 
       let color = d3.scaleOrdinal()
       .domain(chartData)
-      .range(d3.schemeSet2);
+      .range(["red","green","blue","yellow"]);
 
       let pie = d3.pie()
       .value(function(d) {return d.value; })
@@ -126,10 +128,22 @@ export default {
       .attr("transform", function(d) { return "translate(" + arcGenerator.centroid(d) + ")";  })
       .style("text-anchor", "middle")
       .style("font-size", 17)
+      .style("font-weight", "bold")
+      .attr("fill", "#fff")
+
+      let total = (chartData["NA"] + chartData["JP"] + chartData["EU"] + chartData["OT"]).toFixed(0)
+      svg.append("circle").attr("cx",200).attr("cy",0).attr("r", 6).style("fill", "red")
+      svg.append("circle").attr("cx",200).attr("cy",30).attr("r", 6).style("fill", "green")
+      svg.append("circle").attr("cx",200).attr("cy",60).attr("r", 6).style("fill", "blue")
+      svg.append("circle").attr("cx",200).attr("cy",90).attr("r", 6).style("fill", "yellow")
+      svg.append("text").attr("x", 220).attr("y", 0).text(`North America - ${(100 * (chartData["NA"] / total)).toFixed(2)}%`).style("font-size", "15px").attr("alignment-baseline","middle").attr("fill", "#fff")
+      svg.append("text").attr("x", 220).attr("y", 30).text(`Japan - ${(100 * (chartData["JP"] / total)).toFixed(2)}%`).style("font-size", "15px").attr("alignment-baseline","middle").attr("fill", "#fff")
+      svg.append("text").attr("x", 220).attr("y", 60).text(`Europe - ${(100 * (chartData["EU"] / total)).toFixed(2)}%`).style("font-size", "15px").attr("alignment-baseline","middle").attr("fill", "#fff")
+      svg.append("text").attr("x", 220).attr("y", 90).text(`Others - ${(100 * (chartData["OT"] / total)).toFixed(2)}%`).style("font-size", "15px").attr("alignment-baseline","middle").attr("fill", "#fff")
     },
     createSVG (id, chartData) {
       // use vanilla d3 to create bar chart
-      const margin = 50;
+      const margin = 80;
       const width = 1000;
       const height = 300;
 
@@ -191,10 +205,11 @@ export default {
       chart.append("text")
       .attr("class", "y label")
       .attr("text-anchor", "end")
-      .attr("y", 6)
-      .attr("dy", ".75em")
+      .attr("y", -40)
+      .attr("x", -120)
       .attr("transform", "rotate(-90)")
-      .text("life expectancy (years)");
+      .attr("fill", "white")
+      .text("COUNTS");
 
       chart.append('g')
       .attr('transform', `translate(0, ${height})`)
@@ -239,7 +254,7 @@ export default {
     height: 100%;
   }
   .bar {
-      fill: #1ca9c9;
+    fill: #1ca9c9;
   }
   .chart-title {
     font-size: 20px;
@@ -248,7 +263,16 @@ export default {
     margin-bottom: 20px;
   }
   .svg-container{
-     display: inline-block;
-     margin: 0 auto;
+    display: inline-block;
+    margin: 0 auto;
+  }
+
+  .arc path {
+    stroke: #fff;
+  }
+
+  .legend rect {
+    fill:white;
+    stroke:black;
   }
 </style>
