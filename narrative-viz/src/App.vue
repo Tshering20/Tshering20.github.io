@@ -1,5 +1,13 @@
 <template>
   <v-app>
+    <v-app-bar
+      dense
+      dark
+      style='max-height: 50px !important;'
+    >
+      <v-toolbar-title>Video Game Sales Exploration</v-toolbar-title>
+    </v-app-bar>
+
     <v-stepper v-model="e1" eager>
       <v-stepper-header>
         <v-stepper-step :complete="e1 > 1" step="1">1980s</v-stepper-step>
@@ -22,7 +30,7 @@
           <v-card  v-if='e1 == 1'
             class="mb-12"
           >
-            <Carousel :data='decadeToData["1980s"]'/>
+            <Carousel :data='decadeToData["1980s"]' :decade="'80s'"/>
           </v-card>
           <v-btn
             color="primary"
@@ -38,7 +46,7 @@
           <v-card v-if='e1 == 2'
             class="mb-12"
           >
-            <Carousel :data='decadeToData["1990s"]'/>
+            <Carousel :data='decadeToData["1990s"]' :decade="'90s'"/>
           </v-card>
 
           <v-btn
@@ -55,7 +63,7 @@
           <v-card  v-if='e1 == 3'
             class="mb-12"
           >
-            <Carousel :data='decadeToData["2000s"]'/>
+            <Carousel :data='decadeToData["2000s"]' :decade="'00s'"/>
           </v-card>
 
           <v-btn
@@ -72,7 +80,7 @@
           <v-card  v-if='e1 == 4'
             class="mb-12"
           >
-            <Carousel :data='decadeToData["2010s"]'/>
+            <Carousel :data='decadeToData["2010s"]' :decade="'10s'"/>
           </v-card>
 
           <v-btn

@@ -1,27 +1,56 @@
 <template>
-    <v-carousel
-    v-if='data'
-    @change='updateSVG'
-    hide-delimiter-background
-    show-arrows-on-hover
-    v-model='currentChart'>
-    <h1 v-if='currentChart != 4' class='chart-title'>TOP {{chartType[currentChart]}} OF THE 100 BEST SELLING GAMES</h1>
-    <h1 v-else class='chart-title'>PERCENTAGE OF TOTAL SALES BY REGION FOR 100 BEST SELLING GAMES</h1>
-      <v-carousel-item
-        reverse-transition="fade-transition"
-        transition="fade-transition"
-        eager
-        v-for="(type) in chartType"
-        :key="type"
-      >
-        <v-sheet
-          width="100%"
-          height="100%"
-          class="svg-container">
-          <svg :id='type'></svg>
-        </v-sheet>
-      </v-carousel-item>
-    </v-carousel>
+  <div>
+      <v-carousel
+      v-if='data'
+      @change='updateSVG'
+      hide-delimiter-background
+      show-arrows-on-hover
+      v-model='currentChart'>
+      <h1 class='chart-title' v-if='currentChart === 0'>100 BEST SELLING GAMES OF THE {{decade}}</h1>
+      <h1 v-else-if='currentChart != 4' class='chart-title'>TOP {{chartType[currentChart]}} FOR THE BEST SELLING GAMES</h1>
+      <h1 v-else class='chart-title'>PERCENTAGE OF TOTAL SALES BY REGION FOR THE BEST SELLING GAMES</h1>
+        <v-carousel-item
+          reverse-transition="fade-transition"
+          transition="fade-transition"
+          eager
+          v-for="(type) in chartType"
+          :key="type"
+        >
+          <v-sheet
+            width="100%"
+            height="100%"
+            class="svg-container">
+            <v-simple-table v-if='currentChart === 0' height="500px">
+              <template v-slot:default>
+                <thead>
+                  <tr>
+                    <th class="text-left">Rank</th>
+                    <th class="text-left">Name</th>
+                    <th class="text-left">Total Sales (in millions)</th>
+                    <th class="text-left">Platform</th>
+                    <th class="text-left">Genre</th>
+                    <th class="text-left">Publisher</th>
+                    <th class="text-left">Year Released</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, i) in data" :key="i">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.Name }}</td>
+                    <td>{{ item.Global_Sales }}</td>
+                    <td>{{ item.Platform }}</td>
+                    <td>{{ item.Genre }}</td>
+                    <td>{{ item.Publisher }}</td>
+                    <td>{{ item.Year }}</td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+            <svg :id='type'></svg>
+          </v-sheet>
+        </v-carousel-item>
+      </v-carousel>
+    </div>
 </template>
 
 <script>
@@ -29,11 +58,11 @@ import * as d3 from "d3";
 
 export default {
   name: "Carousel",
-  props: ['data'],
+  props: ['data', 'decade'],
   data() {
     return {
-      currentChart: 'PUBLISHERS',
-      chartType: ['PUBLISHERS', 'PLATFORMS', 'GENRES', 'YEARS', 'SALES'],
+      currentChart: 'TABLE',
+      chartType: ['TABLE', 'PUBLISHERS', 'PLATFORMS', 'GENRES', 'YEARS', 'SALES'],
       yearCounts: {},
       genres: {},
       publishers: {},
@@ -72,7 +101,7 @@ export default {
       this.sales['EU'] += datum.EU_Sales
       this.sales['OT'] += datum.Other_Sales
     });
-    this.updateSVG(0);
+    // this.updateSVG(0);
   },
   methods: {
     updatePieChart (id, chartData) {
@@ -132,6 +161,8 @@ export default {
       .attr("fill", "#fff")
 
       let total = (chartData["NA"] + chartData["JP"] + chartData["EU"] + chartData["OT"]).toFixed(0)
+      svg.append("text").attr("x", 220).attr("y", -30).text(`TOTAL SALES - ${total} million`).style("font-size", "15px").attr("alignment-baseline","middle").attr("fill", "#fff")
+
       svg.append("circle").attr("cx",200).attr("cy",0).attr("r", 6).style("fill", "red")
       svg.append("circle").attr("cx",200).attr("cy",30).attr("r", 6).style("fill", "green")
       svg.append("circle").attr("cx",200).attr("cy",60).attr("r", 6).style("fill", "blue")
@@ -158,23 +189,23 @@ export default {
       .attr('transform', `translate(${margin}, ${margin})`);
       
       let maxValue = null;
-      if (id == 0) {
+      if (id == 1) {
         Object.keys(this.publishers).forEach((s) => {
           maxValue = Math.max(maxValue, this.publishers[s])
         })
-      } else if (id == 1) {
+      } else if (id == 2) {
         Object.keys(this.platforms).forEach((s) => {
           maxValue = Math.max(maxValue, this.platforms[s])
         })
-      } else if (id == 2) {
+      } else if (id == 3) {
         Object.keys(this.genres).forEach((s) => {
           maxValue = Math.max(maxValue, this.genres[s])
         })
-      } else if (id == 3) {
+      } else if (id == 4) {
         Object.keys(this.yearCounts).forEach((s) => {
           maxValue = Math.max(maxValue, this.yearCounts[s])
         })
-      } else if (id == 4) {
+      } else if (id == 5) {
         Object.keys(this.sales).forEach((s) => {
           maxValue = Math.max(maxValue, this.sales[s])
         })
@@ -231,15 +262,15 @@ export default {
       .attr('width', xScale.bandwidth());
     },
     updateSVG (slide_num) {      
-        if (slide_num == 2) {
+        if (slide_num == 3) {
         this.createSVG(slide_num, this.genres)
-      } else if (slide_num == 1) {
+      } else if (slide_num == 2) {
         this.createSVG(slide_num, this.platforms)
-      } else if (slide_num == 0) {
+      } else if (slide_num == 1) {
         this.createSVG(slide_num, this.publishers)
-      } else if (slide_num == 3) {
+      } else if (slide_num == 4) {
         this.createSVG(slide_num, this.yearCounts)
-      } else {
+      } else if (slide_num == 5) {
         this.updatePieChart(slide_num, this.sales)
       }
     }
