@@ -114,4 +114,7 @@ export default {
   .v-stepper__step__step  {
     display: none !important;
   }
+  .v-stepper__step--active {
+    font-weight: bold !important;
+  }
 </style>

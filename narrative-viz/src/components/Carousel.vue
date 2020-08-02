@@ -1,16 +1,21 @@
 <template>
     <v-carousel
+    v-if='data'
     @change='updateSVG'
     hide-delimiter-background
-    show-arrows-on-hover>
+    show-arrows-on-hover
+    v-model='currentChart'>
+    <h1 v-if='currentChart != 4' class='chart-title'>TOP {{chartType[currentChart]}} BY COUNT OF THE 100 BEST SELLING GAMES</h1>
+    <h1 v-else class='chart-title'>PERCENTAGE OF TOTAL SALES BY REGION FOR 100 BEST SELLING GAMES</h1>
       <v-carousel-item
         eager
         v-for="(type) in chartType"
         :key="type"
       >
         <v-sheet
+          width="100%"
           height="100%"
-        >
+          class="svg-container">
           <svg :id='type'></svg>
         </v-sheet>
       </v-carousel-item>
@@ -25,16 +30,16 @@ export default {
   props: ['data'],
   data() {
     return {
-      chartType: ['publishers', 'platforms', 'genres', 'years', 'sales'],
+      currentChart: 'PUBLISHERS',
+      chartType: ['PUBLISHERS', 'PLATFORMS', 'GENRES', 'YEARS', 'SALES'],
       yearCounts: {},
       genres: {},
       publishers: {},
       platforms: {},
-      sales: {'Global': 0, 'NA': 0, 'JP': 0, 'EU': 0, 'OT': 0}
+      sales: {'NA': 0, 'JP': 0, 'EU': 0, 'OT': 0}
     };
   },
   mounted() {
-    console.log("HERE")
     // Get various summary stats of top 100 best selling games of a decade
     this.data.forEach((datum) => {
       // Get all counts for Genres, Publishers, and Platforms
@@ -59,7 +64,7 @@ export default {
         this.platforms[datum.Platform] = 1
       }      
      // Get total number in sales in millions
-      this.sales['Global'] += datum.Global_Sales
+      // this.sales['Global'] += datum.Global_Sales
       this.sales['NA'] += datum.NA_Sales
       this.sales['JP'] += datum.JP_Sales
       this.sales['EU'] += datum.EU_Sales
@@ -80,7 +85,7 @@ export default {
       this.chartType.forEach((type, i) => {
         if (i == id) matching_type = type;
       })
-      // append the svg object to the div called 'my_dataviz'
+
       let svg = d3.select(`svg#${matching_type}`)
       .append("svg")
       .attr("width", width)
@@ -124,9 +129,9 @@ export default {
     },
     createSVG (id, chartData) {
       // use vanilla d3 to create bar chart
-      const margin = 40;
-      const width = 1200;
-      const height = 400;
+      const margin = 50;
+      const width = 1000;
+      const height = 300;
 
       let matching_type = null;
       this.chartType.forEach((type, i) => {
@@ -134,21 +139,45 @@ export default {
       })
       let svg = d3.select(`svg#${matching_type}`);
       svg.selectAll("*").remove();
+      
       let chart = svg.append('g')
       .attr('transform', `translate(${margin}, ${margin})`);
       
+      let maxValue = null;
+      if (id == 0) {
+        Object.keys(this.publishers).forEach((s) => {
+          maxValue = Math.max(maxValue, this.publishers[s])
+        })
+      } else if (id == 1) {
+        Object.keys(this.platforms).forEach((s) => {
+          maxValue = Math.max(maxValue, this.platforms[s])
+        })
+      } else if (id == 2) {
+        Object.keys(this.genres).forEach((s) => {
+          maxValue = Math.max(maxValue, this.genres[s])
+        })
+      } else if (id == 3) {
+        Object.keys(this.yearCounts).forEach((s) => {
+          maxValue = Math.max(maxValue, this.yearCounts[s])
+        })
+      } else if (id == 4) {
+        Object.keys(this.sales).forEach((s) => {
+          maxValue = Math.max(maxValue, this.sales[s])
+        })
+      }
+
       const yScale = d3.scaleLinear()
       .range([height, 0])
-      .domain([0, 100]);
+      .domain([0, maxValue]);
 
       chart.append('g')
       .call(d3.axisLeft(yScale));
 
       let domain_values = Object.keys(chartData).sort(function(x, y) {
-        if (chartData[x] < chartData[y]) {
+        if (chartData[x] > chartData[y]) {
           return -1;
         }
-        if (chartData[x] > chartData[y]) {
+        if (chartData[x] < chartData[y]) {
           return 1;
         }
         return 0;
@@ -159,9 +188,22 @@ export default {
       .domain(domain_values)
       .padding(0.2)
 
+      chart.append("text")
+      .attr("class", "y label")
+      .attr("text-anchor", "end")
+      .attr("y", 6)
+      .attr("dy", ".75em")
+      .attr("transform", "rotate(-90)")
+      .text("life expectancy (years)");
+
       chart.append('g')
       .attr('transform', `translate(0, ${height})`)
-      .call(d3.axisBottom(xScale));
+      .call(d3.axisBottom(xScale)).selectAll("text") 
+      .style("text-anchor", "end")
+      .attr("dx", "1em")
+      .attr("dy", "1em")
+      .attr("font-weight", "800")
+      .attr("transform", "rotate(-14)"); 
 
       chart.selectAll()
       .data(domain_values)
@@ -171,7 +213,7 @@ export default {
       .attr('x', (s) => xScale(s))
       .attr('y', (s) => yScale(chartData[s]))
       .attr('height', (s) => height - yScale(chartData[s]))
-      .attr('width', xScale.bandwidth())
+      .attr('width', xScale.bandwidth());
     },
     updateSVG (slide_num) {      
         if (slide_num == 2) {
@@ -198,5 +240,15 @@ export default {
   }
   .bar {
       fill: #1ca9c9;
+  }
+  .chart-title {
+    font-size: 20px;
+    font-weight: bold; 
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .svg-container{
+     display: inline-block;
+     margin: 0 auto;
   }
 </style>
